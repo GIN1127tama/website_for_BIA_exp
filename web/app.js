@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------
 // 設定：取得 Apps Script 部署 URL 後，貼到這裡
 // ----------------------------------------------------------------
-const API_URL = "";
+const API_URL = "https://script.google.com/macros/s/AKfycbyp3GMHF3WPmqnYF0VRrskHhgvGgl9HslbHfkMMi_IrW14nUzBJdyjqDZli8GdMgr3usg/exec";
 // ----------------------------------------------------------------
 
 const PROFILE_KEY = "fatigue_profile_v1";
