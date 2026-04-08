@@ -1,5 +1,10 @@
+// ----------------------------------------------------------------
+// 設定：取得 Apps Script 部署 URL 後，貼到這裡
+// ----------------------------------------------------------------
+const API_URL = "";
+// ----------------------------------------------------------------
+
 const PROFILE_KEY = "fatigue_profile_v1";
-const API_URL_KEY = "fatigue_api_url_v1";
 const HISTORY_KEY = "fatigue_history_v1";
 const PENDING_KEY = "fatigue_pending_v1";
 
@@ -16,8 +21,6 @@ const exportBackupBtn = document.getElementById("exportBackupBtn");
 const fatigueScore = document.getElementById("fatigueScore");
 const fatigueScoreValue = document.getElementById("fatigueScoreValue");
 const sleepStars = document.getElementById("sleepStars");
-const demoMode = document.getElementById("demoMode");
-const apiUrl = document.getElementById("apiUrl");
 
 let sleepQuality = 3;
 let isProfileLocked = false;
@@ -30,18 +33,11 @@ function init() {
   buildStars();
   fatigueScoreValue.textContent = fatigueScore.value;
 
-  const savedApiUrl = localStorage.getItem(API_URL_KEY);
-  if (savedApiUrl) apiUrl.value = savedApiUrl;
-
   loadProfileFromStorage();
   lockProfileIfReady();
 
   fatigueScore.addEventListener("input", () => {
     fatigueScoreValue.textContent = fatigueScore.value;
-  });
-
-  demoMode.addEventListener("change", () => {
-    apiUrl.disabled = demoMode.checked;
   });
 
   editProfileBtn.addEventListener("click", unlockProfile);
@@ -160,52 +156,33 @@ async function onSubmitDaily(event) {
   refreshBackupInfo();
   jsonPreview.textContent = JSON.stringify(payload, null, 2);
 
-  if (demoMode.checked) {
-    status(`Demo 送出成功，timestamp: ${payload.timestamp}（已存本機備份）`, "ok");
+  if (!API_URL) {
+    status(`本機記錄成功，timestamp: ${payload.timestamp}（尚未設定 API_URL）`, "ok");
     return;
   }
-
-  const url = apiUrl.value.trim();
-  if (!url) {
-    status("請先輸入 API URL，或改用 Demo 模式", "warn");
-    addPending(payload);
-    refreshBackupInfo();
-    return;
-  }
-
-  localStorage.setItem(API_URL_KEY, url);
 
   try {
-    const response = await fetch(url, {
+    // 使用 no-cors + text/plain 避免 Apps Script CORS preflight 問題
+    await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain" },
       body: JSON.stringify(payload)
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    status(`送出成功，timestamp: ${payload.timestamp}（已存本機備份）`, "ok");
+    status(`送出成功，timestamp: ${payload.timestamp}`, "ok");
   } catch (error) {
     addPending(payload);
     refreshBackupInfo();
-    status(`送出失敗: ${error.message}`, "warn");
+    status(`網路失敗，已存待送佇列: ${error.message}`, "warn");
   }
 }
 
 async function retryPendingSubmissions() {
-  const url = apiUrl.value.trim();
-  if (demoMode.checked) {
-    status("目前是 Demo 模式，先取消勾選再重送", "warn");
+  if (!API_URL) {
+    status("尚未設定 API_URL，無法重送", "warn");
     return;
   }
-  if (!url) {
-    status("請先輸入 API URL", "warn");
-    return;
-  }
+  const url = API_URL;
 
   const pending = getList(PENDING_KEY);
   if (!pending.length) {
@@ -218,12 +195,12 @@ async function retryPendingSubmissions() {
 
   for (const payload of pending) {
     try {
-      const response = await fetch(url, {
+      await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       successCount += 1;
     } catch {
       remain.push(payload);
