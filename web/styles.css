@@ -1,0 +1,272 @@
+:root {
+  --bg-1: #f3f7ea;
+  --bg-2: #d8e8c9;
+  --ink-1: #132218;
+  --ink-2: #254230;
+  --card: #fbfff7;
+  --line: #bfd1bb;
+  --primary: #005f3a;
+  --primary-press: #00462b;
+  --secondary: #f2f7ef;
+  --warning: #8a4f00;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Noto Sans TC", "Barlow", sans-serif;
+  color: var(--ink-1);
+  background: linear-gradient(140deg, var(--bg-1), var(--bg-2));
+  position: relative;
+  overflow-x: hidden;
+}
+
+.bg-shape {
+  position: fixed;
+  border-radius: 999px;
+  filter: blur(2px);
+  z-index: -1;
+}
+
+.bg-shape-a {
+  width: 320px;
+  height: 320px;
+  background: rgba(0, 95, 58, 0.12);
+  top: -80px;
+  left: -60px;
+}
+
+.bg-shape-b {
+  width: 380px;
+  height: 380px;
+  background: rgba(138, 79, 0, 0.09);
+  right: -120px;
+  bottom: -120px;
+}
+
+.app-shell {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 14px 40px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero {
+  padding: 14px 12px 10px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+h1 {
+  margin: 8px 0 4px;
+  font-family: "Barlow", sans-serif;
+  font-size: 34px;
+  line-height: 1.1;
+}
+
+.hero-sub {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.panel {
+  background: color-mix(in srgb, var(--card) 90%, white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 12px 28px rgba(19, 34, 24, 0.08);
+  animation: rise 0.35s ease both;
+}
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+h2 {
+  margin: 2px 0 12px;
+  font-size: 20px;
+}
+
+.grid-form {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+label,
+fieldset {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--primary) 60%, white);
+  outline-offset: 1px;
+}
+
+.form-actions,
+.form-actions-full {
+  grid-column: 1 / -1;
+}
+
+.primary,
+.secondary {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.primary:active {
+  background: var(--primary-press);
+}
+
+.secondary {
+  background: var(--secondary);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+
+.stars {
+  display: flex;
+  gap: 6px;
+}
+
+.star-btn {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  background: #fff;
+  color: #ad7b00;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.star-btn.active {
+  background: #fff5dc;
+}
+
+.toggle-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-line input {
+  width: 18px;
+  height: 18px;
+}
+
+.status {
+  margin: 10px 0 6px;
+  min-height: 22px;
+  font-weight: 700;
+}
+
+.backup-info {
+  margin: 0 0 8px;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+
+.tool-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.status.warn {
+  color: var(--warning);
+}
+
+.status.ok {
+  color: var(--primary);
+}
+
+.summary {
+  margin-top: 8px;
+  border-top: 1px dashed var(--line);
+  padding-top: 10px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+.json-preview {
+  margin: 0;
+  background: #111c14;
+  color: #ddf3df;
+  border-radius: 12px;
+  padding: 10px;
+  overflow: auto;
+  min-height: 90px;
+  font-size: 12px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .grid-form {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+}

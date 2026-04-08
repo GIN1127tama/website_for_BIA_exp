@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Athlete Fatigue Collector</title>
+  <meta name="theme-color" content="#005f3a" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-shape bg-shape-a"></div>
+  <div class="bg-shape bg-shape-b"></div>
+
+  <main class="app-shell">
+    <header class="hero">
+      <p class="eyebrow">FIELD READY</p>
+      <h1>運動員疲勞採集</h1>
+      <p class="hero-sub">跨 iPhone / Android / 平板 / 筆電，第一次填資料，之後快速採集。</p>
+    </header>
+
+    <section class="panel" id="profilePanel">
+      <div class="panel-title-row">
+        <h2>基本資料</h2>
+        <button class="secondary" id="editProfileBtn" type="button" hidden>修改</button>
+      </div>
+
+      <form id="profileForm" class="grid-form">
+        <label>
+          姓名
+          <input id="name" type="text" required placeholder="請輸入姓名" />
+        </label>
+
+        <label>
+          性別
+          <select id="gender" required>
+            <option value="">請選擇</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </label>
+
+        <label>
+          年齡
+          <input id="age" type="number" min="8" max="99" required />
+        </label>
+
+        <label>
+          身高 (cm)
+          <input id="heightCm" type="number" min="120" max="230" step="0.1" required />
+        </label>
+
+        <label>
+          體重 (kg)
+          <input id="weightKg" type="number" min="30" max="180" step="0.1" required />
+        </label>
+
+        <label>
+          運動專項
+          <select id="sportType" required>
+            <option value="">請選擇</option>
+            <option value="短跑">短跑</option>
+            <option value="長跑">長跑</option>
+            <option value="跨欄">跨欄</option>
+            <option value="重量訓練">重量訓練</option>
+            <option value="籃球">籃球</option>
+            <option value="其他">其他</option>
+          </select>
+        </label>
+
+        <label>
+          Device_ID
+          <input id="deviceId" type="text" placeholder="例如 BIA-001" required />
+        </label>
+
+        <div class="form-actions form-actions-full">
+          <button id="saveProfileBtn" class="primary" type="submit">儲存基本資料</button>
+        </div>
+      </form>
+
+      <div id="profileSummary" class="summary" hidden></div>
+    </section>
+
+    <section class="panel" id="dailyPanel">
+      <h2>每日採集</h2>
+
+      <form id="dailyForm" class="grid-form">
+        <fieldset class="stars-field">
+          <legend>睡眠品質 (1-5)</legend>
+          <div id="sleepStars" class="stars" role="radiogroup" aria-label="睡眠品質"></div>
+        </fieldset>
+
+        <label>
+          當下情境
+          <select id="phase" required>
+            <option value="Wake_Baseline">起床基準</option>
+            <option value="PrePost_Strength">重訓前後</option>
+            <option value="PrePost_Sprint">衝刺前後</option>
+            <option value="PrePost_Sport">專項運動前後</option>
+            <option value="Recovery_24h_48h">恢復追蹤(24h/48h)</option>
+          </select>
+        </label>
+
+        <label>
+          自覺疲勞 (RPE 1-10)
+          <input id="fatigueScore" type="range" min="1" max="10" value="5" />
+          <span id="fatigueScoreValue">5</span>
+        </label>
+
+        <label>
+          量測部位
+          <select id="bodyPart" required>
+            <option value="Left_Quad">左大腿</option>
+            <option value="Right_Quad">右大腿</option>
+            <option value="Left_Calf">左小腿</option>
+            <option value="Right_Calf">右小腿</option>
+          </select>
+        </label>
+
+        <label class="form-actions-full">
+          備註
+          <textarea id="notes" rows="3" placeholder="特殊狀況，例如延遲性痠痛、睡眠不足等"></textarea>
+        </label>
+
+        <label class="form-actions-full toggle-line">
+          <input id="demoMode" type="checkbox" checked />
+          Demo 模式（不送外部 API）
+        </label>
+
+        <label class="form-actions-full">
+          API URL（Demo 關閉時才會送出）
+          <input id="apiUrl" type="url" placeholder="https://example.com/api/fatigue" disabled />
+        </label>
+
+        <div class="form-actions form-actions-full">
+          <button class="primary" type="submit">送出紀錄</button>
+        </div>
+      </form>
+
+      <p id="statusText" class="status" aria-live="polite"></p>
+      <p id="backupInfo" class="backup-info"></p>
+      <div class="tool-row">
+        <button id="retryPendingBtn" class="secondary" type="button">重送待送出資料</button>
+        <button id="exportBackupBtn" class="secondary" type="button">匯出本機 JSON 備份</button>
+      </div>
+      <pre id="jsonPreview" class="json-preview"></pre>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
