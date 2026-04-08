@@ -38,7 +38,15 @@ function doPost(e) {
       data.phase            || "",
       data.body_part        || "",
       data.fatigue_score    || "",
-      data.notes            || ""
+      data.notes            || "",
+      data.test_type        || "",
+      data.jump_cm_1        || "",
+      data.jump_cm_2        || "",
+      data.jump_cm_3        || "",
+      data.best_height_cm   || "",
+      data.baseline_height_cm || "",
+      data.baseline_ratio   || "",
+      data.rsi              || ""
     ]);
 
     return respond({ status: "ok" });
@@ -76,14 +84,22 @@ function writeHeader(sheet) {
     "phase",
     "body_part",
     "fatigue_score",
-    "notes"
+    "notes",
+    "test_type",
+    "jump_cm_1",
+    "jump_cm_2",
+    "jump_cm_3",
+    "best_height_cm",
+    "baseline_height_cm",
+    "baseline_ratio",
+    "rsi"
   ]);
 
   // 凍結標題列
   sheet.setFrozenRows(1);
 
   // 標題列加底色
-  sheet.getRange(1, 1, 1, 14)
+  sheet.getRange(1, 1, 1, 23)
     .setBackground("#005f3a")
     .setFontColor("#ffffff")
     .setFontWeight("bold");

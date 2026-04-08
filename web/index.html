@@ -125,6 +125,46 @@
           <textarea id="notes" rows="3" placeholder="特殊狀況，例如延遲性痠痛、睡眠不足等"></textarea>
         </label>
 
+        <fieldset class="form-actions-full jump-box">
+          <legend>跳躍測試（Performance Label）</legend>
+
+          <label>
+            測試類型
+            <select id="testType" required>
+              <option value="CMJ_ArmSwing">CMJ（有擺臂）</option>
+              <option value="CMJ_HandsOnHips">CMJ（雙手插腰）</option>
+              <option value="Squat_Jump">Squat Jump（無反向下蹲）</option>
+            </select>
+          </label>
+
+          <label>
+            跳躍高度 #1 (cm)
+            <input id="jumpHeight1" type="number" min="1" step="0.1" required />
+          </label>
+
+          <label>
+            跳躍高度 #2 (cm)
+            <input id="jumpHeight2" type="number" min="1" step="0.1" required />
+          </label>
+
+          <label>
+            跳躍高度 #3 (cm)
+            <input id="jumpHeight3" type="number" min="1" step="0.1" required />
+          </label>
+
+          <label>
+            個人基準高度 Baseline (cm)
+            <input id="baselineHeight" type="number" min="1" step="0.1" required />
+          </label>
+
+          <label>
+            RSI（選填）
+            <input id="rsi" type="number" min="0" step="0.01" placeholder="例如 1.85" />
+          </label>
+
+          <p class="jump-summary" id="jumpSummary">最佳高度: -- cm | Baseline 比值: --</p>
+        </fieldset>
+
         <div class="form-actions form-actions-full">
           <button class="primary" type="submit">送出紀錄</button>
         </div>

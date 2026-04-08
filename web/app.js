@@ -21,6 +21,12 @@ const exportBackupBtn = document.getElementById("exportBackupBtn");
 const fatigueScore = document.getElementById("fatigueScore");
 const fatigueScoreValue = document.getElementById("fatigueScoreValue");
 const sleepStars = document.getElementById("sleepStars");
+const jumpHeight1 = document.getElementById("jumpHeight1");
+const jumpHeight2 = document.getElementById("jumpHeight2");
+const jumpHeight3 = document.getElementById("jumpHeight3");
+const baselineHeight = document.getElementById("baselineHeight");
+const rsi = document.getElementById("rsi");
+const jumpSummary = document.getElementById("jumpSummary");
 
 let sleepQuality = 3;
 let isProfileLocked = false;
@@ -40,6 +46,10 @@ function init() {
     fatigueScoreValue.textContent = fatigueScore.value;
   });
 
+  [jumpHeight1, jumpHeight2, jumpHeight3, baselineHeight].forEach((input) => {
+    input.addEventListener("input", refreshJumpSummary);
+  });
+
   editProfileBtn.addEventListener("click", unlockProfile);
   profileForm.addEventListener("submit", onSaveProfile);
   dailyForm.addEventListener("submit", onSubmitDaily);
@@ -51,6 +61,7 @@ function init() {
   });
 
   refreshBackupInfo();
+  refreshJumpSummary();
 }
 
 function buildStars() {
@@ -136,6 +147,19 @@ async function onSubmitDaily(event) {
     return;
   }
 
+  const j1 = toNumberOrNull(jumpHeight1.value);
+  const j2 = toNumberOrNull(jumpHeight2.value);
+  const j3 = toNumberOrNull(jumpHeight3.value);
+  const baseline = toNumberOrNull(baselineHeight.value);
+
+  if ([j1, j2, j3, baseline].some((v) => v === null) || baseline <= 0) {
+    status("請完整填寫跳躍測試 3 次高度與基準高度", "warn");
+    return;
+  }
+
+  const bestHeight = Math.max(j1, j2, j3);
+  const baselineRatio = Number((bestHeight / baseline).toFixed(4));
+
   const payload = {
     timestamp: Math.floor(Date.now() / 1000),
     name: profile.name,
@@ -149,7 +173,15 @@ async function onSubmitDaily(event) {
     phase: document.getElementById("phase").value,
     body_part: document.getElementById("bodyPart").value,
     fatigue_score: Number(fatigueScore.value),
-    notes: document.getElementById("notes").value.trim()
+    notes: document.getElementById("notes").value.trim(),
+    test_type: document.getElementById("testType").value,
+    jump_cm_1: j1,
+    jump_cm_2: j2,
+    jump_cm_3: j3,
+    best_height_cm: bestHeight,
+    baseline_height_cm: baseline,
+    baseline_ratio: baselineRatio,
+    rsi: toNumberOrNull(rsi.value)
   };
 
   addHistory(payload);
@@ -329,6 +361,28 @@ function refreshBackupInfo() {
   const historyCount = getList(HISTORY_KEY).length;
   const pendingCount = getList(PENDING_KEY).length;
   backupInfo.textContent = `本機備份 ${historyCount} 筆 | 待送 ${pendingCount} 筆`;
+}
+
+function refreshJumpSummary() {
+  const j1 = toNumberOrNull(jumpHeight1.value);
+  const j2 = toNumberOrNull(jumpHeight2.value);
+  const j3 = toNumberOrNull(jumpHeight3.value);
+  const baseline = toNumberOrNull(baselineHeight.value);
+
+  if ([j1, j2, j3, baseline].some((v) => v === null) || baseline <= 0) {
+    jumpSummary.textContent = "最佳高度: -- cm | Baseline 比值: --";
+    return;
+  }
+
+  const bestHeight = Math.max(j1, j2, j3);
+  const ratio = (bestHeight / baseline) * 100;
+  jumpSummary.textContent = `最佳高度: ${bestHeight.toFixed(1)} cm | Baseline 比值: ${ratio.toFixed(1)}%`;
+}
+
+function toNumberOrNull(value) {
+  if (value === "" || value === null || value === undefined) return null;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
 }
 
 function escapeHtml(str) {
